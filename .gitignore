@@ -5,3 +5,4 @@ blob-report/
 .env
 storageState.json
 .DS_Store
+playwright/.auth/

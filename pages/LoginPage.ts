@@ -6,54 +6,72 @@ import { ENV } from 'utils/env';
 
 export class LoginPage extends BasePage {
   readonly page: Page;
+  readonly signInMicrosoftButton: Locator;
   readonly emailInput: Locator;
+  readonly nextButton: Locator;
   readonly passwordInput: Locator;
-  readonly loginButton: Locator;
-  readonly errorMessage: Locator;
+  readonly confirmYesButton: Locator;
+  readonly signInButton: Locator;
+  readonly Banner: Locator;
+  readonly avatarIcon: Locator;
+  readonly signOutButton: Locator;
+  readonly welcomeBanner: Locator;
 
   constructor(page: Page) {
     super(page);
     this.page = page;
-    this.emailInput = page.locator('form').filter({ hasText: 'Login' }).getByPlaceholder('Email Address');
-    this.passwordInput = page.getByRole('textbox', { name: 'Password' });
-    this.loginButton = page.getByRole('button', { name: 'Login' });
-    this.errorMessage = page.getByText('Your email or password is');
+    this.signInMicrosoftButton = page.locator("//button[normalize-space()='Sign in with Microsoft']");
+    this.emailInput = page.locator("//input[@id='i0116']");
+    this.nextButton = page.locator("//input[@id='idSIButton9']");
+    this.passwordInput = page.locator("//input[@id='i0118']");
+    this.signInButton = page.locator("//input[@id='idSIButton9']");
+    this .confirmYesButton = page.locator("//input[@id='idSIButton9']");
+    this.Banner = page.locator("//header//*[contains(text(),'Polaris')]");
+    this.avatarIcon = page.locator("//header//*[contains(@aria-label,'User menu')]"); 
+    this.signOutButton = page.locator("//button[normalize-space()='Sign out']");
+    this.welcomeBanner = page.locator("//span[@class='text-4xl font-bold tracking-tight']");
   }
 
   async open() {
     await this.page.goto(ENV.baseUrl);
   }
 
+  async clickSignInMicrosoft() {
+    await this.signInMicrosoftButton.click();
+  }
   async fillEmail(email: string) {
     await this.emailInput.fill(email);
+  }
+  
+  async clickNext() {
+    await this.nextButton.click();
   }
 
   async fillPassword(password: string) {
     await this.passwordInput.fill(password);
   }
 
-  async clickLogin() {
-    await this.loginButton.click();
+  async clickSignIn() {
+    await this.signInButton.click();
   }
 
-  async login(email: string, password: string) {
-    await this.fillEmail(email);
-    await this.fillPassword(password);
-    await this.clickLogin();
+  async clickConfirmYes() {
+    await this.confirmYesButton.click();
   }
 
-  async getEmailValidationMessage() {
-    return await this.emailInput.evaluate(
-      (el: HTMLInputElement) => el.validationMessage
-    );
+  async verifyBanner(expectedMessage: string) {
+    await this.verifyText(this.Banner, expectedMessage);
   }
 
-  async verifyEmailValidationMessage(expectedMessage: string) {
-    const actualMessage = await this.getEmailValidationMessage();
-    expect(actualMessage).toContain(expectedMessage);
+  async clickAvatar() {
+    await this.avatarIcon.click();
   }
 
-  async verifyError(expectedMessage: string) {
-    await this.verifyText(this.errorMessage, expectedMessage);
+  async clickSignOut() {
+    await this.signOutButton.click();
+  }
+
+  async verifyWelcomeBanner(WelcomeMessage: string) {
+    await this.verifyText(this.welcomeBanner, WelcomeMessage);
   }
 }

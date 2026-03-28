@@ -1,70 +1,43 @@
+import { ENV } from 'utils/env';
 import { test } from '../../fixtures/ui.fixture';
 import { LoginPage } from '../../pages/LoginPage';
 
-test('login failed with invalid email format', async ({ page }) => {
+test('TC1: First time login Polaris sucessfully', async ({ page }) => {
   const loginPage = new LoginPage(page);
-
-  const email = 'nguyen';
-  const password = 'abc';
-  const expectedMessage = "Please include an '@' in the email address";
+  const expectedMessage = "Polaris";
 
   await test.step('Step 1: Open login page', async () => {
     await loginPage.open();
   });
 
-  await test.step('Step 2: Enter invalid email and password', async () => {
-    await loginPage.login(email, password);
+  await test.step('Step 2: Click Sign in with Microsoft', async () => {
+    await loginPage.clickSignInMicrosoft();
+  });
+  
+  await test.step('Step 3: Enter email', async () => {
+    await loginPage.fillEmail(ENV.email);
   });
 
-  await test.step('Step 3: Verify browser validation message', async () => {
-    await loginPage.verifyEmailValidationMessage(expectedMessage);
+  await test.step('Step 4: Click Next button', async () => {
+    await loginPage.clickNext();
   });
+
+  await test.step('Step 5: Enter password', async () => {
+    await loginPage.fillPassword(ENV.password);
+  });
+
+  await test.step('Step 6: Click Sign in button', async () => {
+    await loginPage.clickSignIn();
+  });
+
+  await test.step('Step 7: Click Yes button to confirm stay signed in', async () => {
+    await loginPage.clickConfirmYes();
+  });
+
+  await test.step('Step 8: Verify browser validation message', async () => {
+    await loginPage.verifyBanner(expectedMessage);
+  });
+
 });
 
-test('login failed with wrong password', async ({ page }) => {
-  const loginPage = new LoginPage(page);
 
-  const email = 'oop@gmail.com';
-  const password = 'abc';
-  const expectedMessage = 'Your email or password is incorrect!';
-
-  await test.step('Step 1: Open login page', async () => {
-    await loginPage.open();
-  });
-
-  await test.step('Step 2: Enter valid email and wrong password', async () => {
-    await loginPage.login(email, password);
-  });
-
-  await test.step('Step 3: Verify login error message', async () => {
-    await loginPage.verifyError(expectedMessage);
-  });
-});
-
-test.describe('Login with valid credentials', () => {
-  test.beforeEach(async ({ page, dashboardPage }) => {
-    const loginPage = new LoginPage(page);
-    const email = 'oop@gmail.com';
-    const password = '123';
-
-    await test.step('Step 1: Open login page', async () => {
-      await loginPage.open();
-    });
-
-    await test.step('Step 2: Login with valid credentials', async () => {
-      await loginPage.login(email, password);
-    });
-
-    await test.step('Step 3: Verify dashboard is loaded', async () => {
-      await dashboardPage.verifyLoaded();
-    });
-  });
-
-  test('should display article on dashboard', async ({ dashboardPage }) => {
-    const expectedMessage = 'AutomationExercise';
-
-    await test.step('Step 4: Verify article title on dashboard', async () => {
-      await dashboardPage.verifyArticleTitle(expectedMessage);
-    });
-  });
-});

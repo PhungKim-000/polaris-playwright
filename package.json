@@ -9,7 +9,8 @@
     "test:api": "playwright test tests/api",
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
-    "report": "playwright show-report"
+    "report": "playwright show-report",
+    "zip-report": "powershell -Command \"if (Test-Path playwright-report.zip) { Remove-Item playwright-report.zip -Force }; Compress-Archive -Path playwright-report\\* -DestinationPath playwright-report.zip -Force\""
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",

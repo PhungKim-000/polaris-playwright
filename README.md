@@ -54,6 +54,7 @@ npm run test:ui
 npm run test:debug
 npm run test:headed
 npx playwright show-report
+npm run zip-report
 ```
 
 ## Browsers

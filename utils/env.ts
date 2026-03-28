@@ -12,9 +12,9 @@ function getEnv(name: string, fallback = ''): string {
 
 export const ENV = {
   testEnv: targetEnv,
-  baseUrl: 'https://automationexercise.com/login',
+  baseUrl: 'URL',
   apiUrl: getEnv('API_URL'),
-  username: getEnv('USERNAME'),
-  password: getEnv('PASSWORD'),
+  email: 'email',
+  password: 'pwd',
   headless: getEnv('HEADLESS', 'true') === 'true'
 };

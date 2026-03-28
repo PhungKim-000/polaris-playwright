@@ -3,12 +3,12 @@ import { ENV } from './utils/env';
 
 export default defineConfig({
   testDir: './tests',
-  timeout: 30_000,
+  timeout: 300_000,
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [['html', { open: 'never' }], ['list']],
+  reporter: [['list'],['html', { outputFolder: 'playwright-report', open: 'never' }],],
   use: {
     baseURL: ENV.baseUrl,
     headless: ENV.headless,
@@ -17,20 +17,65 @@ export default defineConfig({
     trace: 'on-first-retry'
   },
   projects: [
+    // Setup for Chromium
     {
-      name: 'chromium',
-      testMatch: /tests\/ui\/.*\.spec\.ts/,
+      name: 'setup-chromium',
+      testMatch: /.*auth\/login\.setup\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
-        storageState: './auth/storageState.json'
-      }
+      },
     },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
-    { name: 'Microsoft Edge', use: { ...devices['Desktop Edge'] } },
+
+    // Login business test on Chromium - NO storage
     {
-      name: 'api',
-      testMatch: /tests\/api\/.*\.spec\.ts/
-    }
-  ]
+      name: 'chromium',
+      testMatch: /.*ui\/login\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+      },
+    },
+
+    // Logout business test on Chromium - USE storage
+    {
+      name: 'chromium',
+      testMatch: /.*ui\/logout\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: 'playwright/.auth/chromium.json',
+      },
+      dependencies: ['setup-chromium'],
+    },
+
+    // Setup for Edge
+    {
+      name: 'setup-edge',
+      testMatch: /.*auth\/login\.setup\.spec\.ts/,
+      use: {
+        ...devices['Desktop Edge'],
+        channel: 'msedge',
+      },
+    },
+
+    // Login business test on Edge - NO storage
+    {
+      name: 'Microsoft Edge',
+      testMatch: /.*ui\/login\.spec\.ts/,
+      use: {
+        ...devices['Desktop Edge'],
+        channel: 'msedge',
+      },
+    },
+
+    // Logout business test on Edge - USE storage
+    {
+      name: 'Microsoft Edge',
+      testMatch: /.*ui\/logout\.spec\.ts/,
+      use: {
+        ...devices['Desktop Edge'],
+        channel: 'msedge',
+        storageState: 'playwright/.auth/edge.json',
+      },
+      dependencies: ['setup-edge'],
+    },
+  ],
 });
