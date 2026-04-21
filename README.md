@@ -1,3 +1,5 @@
+# Notes: Please go to env.ts and replace url, email, password before running testcase
+
 # Playwright Framework
 
 A lightweight Playwright framework using **Page Object Model (POM)** for small UI automation projects.

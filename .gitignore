@@ -3,6 +3,5 @@ playwright-report/
 test-results/
 blob-report/
 .env
-storageState.json
 .DS_Store
 playwright/.auth/

@@ -12,9 +12,9 @@ function getEnv(name: string, fallback = ''): string {
 
 export const ENV = {
   testEnv: targetEnv,
-  baseUrl: 'URL',
-  apiUrl: getEnv('API_URL'),
-  email: 'email',
-  password: 'pwd',
+  baseUrl: 'URL', // Replace with actual URL
+  apiUrl: getEnv(''),
+  email: 'email', // Replace with actual email
+  password: 'Pwd', // Replace with actual password
   headless: getEnv('HEADLESS', 'true') === 'true'
 };
